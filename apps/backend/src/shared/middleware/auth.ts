@@ -7,6 +7,15 @@ const supabaseOrigin = env.supabaseUrl.replace(/\/$/, "");
 const jwks = createRemoteJWKSet(new URL(`${supabaseOrigin}/auth/v1/.well-known/jwks.json`));
 const issuer = `${supabaseOrigin}/auth/v1`;
 
+function extractBearerToken(authorization: string): string {
+  let value = authorization.trim();
+  while (/^Bearer\s+/i.test(value)) {
+    value = value.replace(/^Bearer\s+/i, "").trim();
+  }
+  value = value.replace(/^["'](.+)["']$/, "$1").trim();
+  return value;
+}
+
 export async function authMiddleware(
   request: FastifyRequest,
   _reply: FastifyReply
@@ -17,7 +26,10 @@ export async function authMiddleware(
     throw new AppError("Missing token", 401, "UNAUTHORIZED");
   }
 
-  const token = authHeader.startsWith("Bearer ") ? authHeader.slice("Bearer ".length) : authHeader;
+  const token = extractBearerToken(authHeader);
+  if (!token) {
+    throw new AppError("Missing token", 401, "UNAUTHORIZED");
+  }
 
   try {
     const { payload } = await jwtVerify(token, jwks, {
@@ -32,6 +44,7 @@ export async function authMiddleware(
       error instanceof errors.JWTExpired ||
       error instanceof errors.JWTClaimValidationFailed ||
       error instanceof errors.JWSSignatureVerificationFailed ||
+      error instanceof errors.JWSInvalid ||
       error instanceof errors.JWTInvalid
     ) {
       throw new AppError("Invalid token", 401, "INVALID_TOKEN");
