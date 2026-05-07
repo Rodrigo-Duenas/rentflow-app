@@ -53,19 +53,32 @@
 }
 
 #root {
-  width: 1126px;
-  max-width: 100%;
-  margin: 0 auto;
-  text-align: center;
-  border-inline: 1px solid var(--border);
-  min-height: 100svh;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
 }
 
+/* ── Base: lock de scroll absoluto ───────────────────────────────────────
+   dvh = viewport height real (descuenta barra del navegador en móvil).
+   Con overflow:hidden en html Y body nada puede scrollear el documento.
+   ─────────────────────────────────────────────────────────────────────── */
+html,
 body {
+  height: 100dvh;
+  max-height: 100dvh;
   margin: 0;
+  overflow: hidden;
+}
+
+/* Pages that need scroll (future non-auth routes) opt-in with this class */
+body.rf-scrollable {
+  overflow-y: auto;
+  height: auto;
+  max-height: none;
 }
 
 h1,

@@ -1,0 +1,450 @@
+/* Apple-style centered card (referencia: deepseek_html) — acoplado a tokens / .dark */
+
+.auth-page--apple {
+  /* Form controls (checkbox) siguen el tema activo, no solo prefers-color-scheme */
+  color-scheme: light;
+
+  --apple-bg-body: #f5f7fb;
+  --apple-card-bg: #ffffff;
+  --apple-card-border: rgba(0, 0, 0, 0.06);
+  --apple-text-primary: #1d1d1f;
+  --apple-text-secondary: #6e6e73;
+  --apple-border: #d2d2d7;
+  --apple-input-bg: #ffffff;
+  --apple-shadow:
+    0 10px 40px rgba(15, 23, 42, 0.08),
+    0 0 0 1px var(--apple-card-border);
+  --apple-btn-primary: #0071e3;
+  --apple-btn-primary-text: #ffffff;
+  --apple-btn-social-bg: #ffffff;
+  --apple-btn-social-border: #d2d2d7;
+  --apple-divider: #d2d2d7;
+  --apple-link: #0071e3;
+  --apple-focus-ring: rgba(0, 113, 227, 0.2);
+
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100dvh;
+  max-height: 100dvh;
+  min-height: 0;
+  padding: max(0.75rem, env(safe-area-inset-top, 0px))
+    max(1rem, env(safe-area-inset-right, 0px))
+    max(0.75rem, env(safe-area-inset-bottom, 0px))
+    max(1rem, env(safe-area-inset-left, 0px));
+  box-sizing: border-box;
+  background: var(--apple-bg-body);
+  color: var(--apple-text-primary);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
+    Arial, sans-serif;
+  animation: auth-enter 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+}
+
+html.dark .auth-page--apple {
+  color-scheme: dark;
+
+  /* Fondo gris carbón (no negro puro); tarjeta un pelín más clara */
+  --apple-bg-body: #1a1a1a;
+  --apple-card-bg: #242426;
+  --apple-card-border: rgba(255, 255, 255, 0.1);
+  --apple-text-primary: #f5f5f7;
+  --apple-text-secondary: #a1a1a6;
+  --apple-border: #3d3d42;
+  --apple-input-bg: #2c2c30;
+  --apple-shadow:
+    0 12px 40px rgba(0, 0, 0, 0.55),
+    0 0 0 1px var(--apple-card-border);
+  --apple-btn-primary: #0a84ff;
+  --apple-btn-social-bg: #2e2e32;
+  --apple-btn-social-border: #3d3d42;
+  --apple-divider: #3d3d42;
+  --apple-link: #0a84ff;
+  --apple-focus-ring: rgba(10, 132, 255, 0.3);
+}
+
+.auth-page--apple .auth-apple-card,
+.auth-page--apple .auth-apple-input,
+.auth-page--apple .auth-apple-btn-primary,
+.auth-page--apple .auth-apple-btn-social {
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease,
+    border-color 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+.auth-apple-card {
+  position: relative;
+  width: 100%;
+  /* Referencia ~columna estrecha; un poco más ancha que 400px para legibilidad */
+  max-width: min(25.5rem, calc(100vw - 2rem));
+  flex-shrink: 0;
+  background: var(--apple-card-bg);
+  border-radius: 1.5rem;
+  box-shadow: var(--apple-shadow);
+  padding: min(2.5rem, 4.5dvh) clamp(1.5rem, 4vw, 2.25rem)
+    min(2.75rem, 4.75dvh);
+  text-align: center;
+}
+
+.auth-apple-theme-toggle {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0.25rem;
+  border-radius: 50%;
+  width: 2.5rem;
+  height: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--apple-text-primary);
+}
+
+.auth-apple-theme-toggle:focus-visible {
+  outline: 2px solid var(--apple-link);
+  outline-offset: 2px;
+}
+
+.auth-apple-logo {
+  margin-bottom: min(1.25rem, 2.2dvh);
+  display: flex;
+  justify-content: center;
+  color: var(--apple-link);
+}
+
+.auth-apple-app-title {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--apple-text-secondary);
+  margin-bottom: min(1.5rem, 2.75dvh);
+  letter-spacing: 0.01em;
+}
+
+.auth-apple-welcome {
+  font-size: clamp(1.35rem, 2.5vw, 1.65rem);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  margin: 0 0 min(0.5rem, 1dvh);
+  color: var(--apple-text-primary);
+  line-height: 1.2;
+}
+
+.auth-apple-sub {
+  font-size: 0.875rem;
+  color: var(--apple-text-secondary);
+  margin: 0 0 min(1.75rem, 3dvh);
+  line-height: 1.45;
+  max-width: 26rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.auth-apple-form {
+  text-align: left;
+}
+
+.auth-apple-field {
+  margin-bottom: min(1.25rem, 2dvh);
+}
+
+.auth-apple-label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--apple-text-primary);
+  margin-bottom: 0.5625rem;
+}
+
+.auth-apple-input-wrap {
+  position: relative;
+}
+
+.auth-apple-input {
+  width: 100%;
+  height: min(2.875rem, 9.25dvh);
+  padding: 0 0.75rem;
+  border: 1px solid var(--apple-border);
+  border-radius: 0.625rem;
+  font-size: 0.9375rem;
+  background: var(--apple-input-bg);
+  color: var(--apple-text-primary);
+  outline: none;
+  box-sizing: border-box;
+}
+
+.auth-apple-input:focus {
+  border-color: var(--apple-link);
+  box-shadow: 0 0 0 3px var(--apple-focus-ring);
+}
+
+.auth-apple-input--password {
+  padding-right: 2.5rem;
+}
+
+.auth-apple-pwd-toggle {
+  position: absolute;
+  right: 0.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.25rem;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--apple-text-secondary);
+}
+
+.auth-apple-pwd-toggle:focus-visible {
+  outline: 2px solid var(--apple-link);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+.auth-apple-options {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 0.25rem 0 min(1.35rem, 2.25dvh);
+  gap: 0.75rem;
+  font-size: 0.8125rem;
+}
+
+.auth-apple-remember {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  color: var(--apple-text-primary);
+  cursor: pointer;
+}
+
+.auth-apple-remember input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  box-sizing: border-box;
+  width: 1rem;
+  height: 1rem;
+  margin: 0;
+  flex-shrink: 0;
+  border: 1.5px solid var(--apple-border);
+  border-radius: 4px;
+  background: var(--apple-input-bg);
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.auth-apple-remember input[type="checkbox"]:hover {
+  border-color: var(--apple-link);
+}
+
+.auth-apple-remember input[type="checkbox"]:focus-visible {
+  outline: 2px solid var(--apple-link);
+  outline-offset: 2px;
+}
+
+.auth-apple-remember input[type="checkbox"]:checked {
+  background-color: var(--apple-link);
+  border-color: var(--apple-link);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' fill='none'%3E%3Cpath d='M2.5 6l2.5 2.5L9.5 3' stroke='%23fff' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-size: 0.65rem 0.65rem;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.auth-apple-forgot {
+  color: var(--apple-link);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.auth-apple-forgot:hover {
+  text-decoration: underline;
+}
+
+.auth-apple-btn-primary {
+  width: 100%;
+  height: min(2.875rem, 9.25dvh);
+  background: var(--apple-btn-primary);
+  color: var(--apple-btn-primary-text);
+  border: none;
+  border-radius: 0.625rem;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-bottom: min(1.35rem, 2.25dvh);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.auth-apple-btn-primary:hover:not(:disabled) {
+  filter: brightness(1.05);
+}
+
+.auth-apple-btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.auth-apple-divider {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: min(1.35rem, 2.25dvh);
+  color: var(--apple-text-secondary);
+  font-size: 0.75rem;
+  text-transform: lowercase;
+}
+
+.auth-apple-divider::before,
+.auth-apple-divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--apple-divider);
+}
+
+.auth-apple-btn-social {
+  width: 100%;
+  height: min(2.875rem, 9.25dvh);
+  background: var(--apple-btn-social-bg);
+  border: 1px solid var(--apple-btn-social-border);
+  border-radius: 0.625rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  color: var(--apple-text-primary);
+  cursor: pointer;
+  margin-bottom: min(1.35rem, 2.25dvh);
+}
+
+.auth-apple-btn-social:hover {
+  filter: brightness(0.97);
+}
+
+html.dark .auth-apple-btn-social:hover {
+  filter: brightness(1.08);
+}
+
+.auth-apple-register {
+  font-size: 0.8125rem;
+  color: var(--apple-text-primary);
+  margin: 0 0 min(1rem, 1.65dvh);
+  line-height: 1.45;
+  text-align: center;
+}
+
+.auth-apple-register a {
+  color: var(--apple-link);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.auth-apple-register a:hover {
+  text-decoration: underline;
+}
+
+.auth-apple-security {
+  font-size: 0.6875rem;
+  color: var(--apple-text-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.375rem;
+  margin: 0;
+  padding-top: 0.125rem;
+  line-height: 1.35;
+}
+
+.auth-apple-security svg {
+  flex-shrink: 0;
+  opacity: 0.85;
+}
+
+.auth-apple-spinner {
+  width: 1.25rem;
+  height: 1.25rem;
+  border: 2px solid rgba(255, 255, 255, 0.35);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: auth-spin 0.7s linear infinite;
+}
+
+@media (min-width: 640px) {
+  .auth-apple-card {
+    max-width: min(27rem, calc(100vw - 2.5rem));
+  }
+}
+
+@media (max-height: 720px) {
+  .auth-apple-logo {
+    margin-bottom: 0.5rem;
+  }
+  .auth-apple-logo svg {
+    width: 34px;
+    height: 34px;
+  }
+  .auth-apple-app-title {
+    margin-bottom: 0.75rem;
+  }
+  .auth-apple-sub {
+    margin-bottom: 0.875rem;
+  }
+  .auth-apple-field {
+    margin-bottom: 0.75rem;
+  }
+}
+
+/* Chromium/Edge: encoge la tarjeta para caber en poca altura sin scroll del documento */
+@supports (zoom: 1) {
+  @media (max-height: 700px) {
+    .auth-apple-card {
+      zoom: 0.9;
+    }
+  }
+  @media (max-height: 620px) {
+    .auth-apple-card {
+      zoom: 0.82;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .auth-apple-card {
+    padding: min(2rem, 3.75dvh) 1.25rem min(2.25rem, 4dvh);
+    max-width: 100%;
+    border-radius: 1.25rem;
+  }
+
+  .auth-apple-welcome {
+    font-size: 1.35rem;
+  }
+
+  .auth-apple-sub {
+    font-size: 0.8125rem;
+  }
+
+  .auth-apple-options {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+}
