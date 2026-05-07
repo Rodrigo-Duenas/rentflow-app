@@ -1,0 +1,24 @@
+{
+  "login": {
+    "form": {
+      "appTitle": "RentFlow",
+      "themeToggle": "Switch theme",
+      "showPassword": "Show password",
+      "hidePassword": "Hide password",
+      "title": "Welcome back",
+      "subtitle": "Sign in to your RentFlow account",
+      "emailLabel": "Email",
+      "emailPlaceholder": "you@email.com",
+      "passwordLabel": "Password",
+      "passwordPlaceholder": "••••••••••",
+      "remember": "Remember me",
+      "forgot": "Forgot your password?",
+      "submit": "Sign in",
+      "google": "Continue with Google",
+      "registerPrefix": "Don't have an account?",
+      "registerLink": "Register here",
+      "dividerOr": "or",
+      "securityNote": "Your data is protected"
+    }
+  }
+}
