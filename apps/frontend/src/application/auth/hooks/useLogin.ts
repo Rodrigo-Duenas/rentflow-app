@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 import { authService } from "@/infrastructure/auth/auth.service";
 
@@ -7,6 +8,8 @@ import type { LoginResponse } from "@/domain/auth/auth.responses";
 import { useAuthStore } from "@/application/stores/auth";
 
 export const useLogin = () => {
+  const navigate = useNavigate();
+
   const [isLoading, setIsLoading] = useState(false);
 
   const [error, setError] = useState<string | null>(null);
@@ -25,6 +28,7 @@ export const useLogin = () => {
       const response = await authService.login(credentials);
 
       setAuth(response.accessToken, response.refreshToken, response.user);
+      navigate("/dashboard", { replace: true });
 
       return response;
     } catch (err) {
