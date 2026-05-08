@@ -1,16 +1,16 @@
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 
+import { useLogin } from "@/application/auth/hooks/useLogin";
 import { useTheme } from "@/application/theme/useTheme";
+import { loginSchema } from "@/domain/auth/auth.schema";
+import type { LoginSchema } from "@/domain/auth/auth.schema";
 
 import { IconEye, IconGoogle, IconShield } from "./icons";
-import type { LoginFormActions, LoginFormState } from "./login.types";
 
-type LoginFormProps = {
-  state: LoginFormState;
-  actions: LoginFormActions;
-};
-
-const AppleHouseLogo = () => (
+const LoginBrandIcon = () => (
   <svg
     width="40"
     height="40"
@@ -30,16 +30,38 @@ const AppleHouseLogo = () => (
   </svg>
 );
 
-export const LoginForm = ({ state, actions }: LoginFormProps) => {
+export const LoginForm = () => {
   const { t } = useTranslation();
   const theme = useTheme((s) => s.theme);
   const toggleTheme = useTheme((s) => s.toggleTheme);
+  const { login, isLoading, error } = useLogin();
+
+  const [showPwd, setShowPwd] = useState(false);
+  const [remember, setRemember] = useState(false);
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<LoginSchema>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+  });
+
+  const onSubmit = async (data: LoginSchema) => {
+    await login(data);
+  };
+
+  const busy = isLoading || isSubmitting;
 
   return (
-    <div className="auth-apple-card">
+    <div className="login-card">
       <button
         type="button"
-        className="auth-apple-theme-toggle"
+        className="login-theme-toggle"
         onClick={toggleTheme}
         aria-label={t("login.form.themeToggle")}
         title={t("login.form.themeToggle")}
@@ -47,111 +69,133 @@ export const LoginForm = ({ state, actions }: LoginFormProps) => {
         <span aria-hidden="true">{theme === "light" ? "🌙" : "☀️"}</span>
       </button>
 
-      <div className="auth-apple-logo">
-        <AppleHouseLogo />
+      <div className="login-logo">
+        <LoginBrandIcon />
       </div>
-      <div className="auth-apple-app-title">{t("login.form.appTitle")}</div>
+      <div className="login-app-title">{t("login.form.appTitle")}</div>
 
-      <h1 className="auth-apple-welcome">{t("login.form.title")}</h1>
-      <p className="auth-apple-sub">{t("login.form.subtitle")}</p>
+      <h1 className="login-welcome">{t("login.form.title")}</h1>
+      <p className="login-sub">{t("login.form.subtitle")}</p>
 
       <form
-        className="auth-apple-form"
-        onSubmit={(e) => {
-          e.preventDefault();
-          void actions.submit();
-        }}
+        className="login-form"
+        onSubmit={handleSubmit(onSubmit)}
+        noValidate
       >
-        <div className="auth-apple-field">
-          <label className="auth-apple-label" htmlFor="auth-email">
+        <div className="login-field">
+          <label className="login-label" htmlFor="auth-email">
             {t("login.form.emailLabel")}
           </label>
-          <div className="auth-apple-input-wrap">
+          <div className="login-input-wrap">
             <input
               id="auth-email"
-              className="auth-apple-input"
+              className="login-input"
               type="email"
               placeholder={t("login.form.emailPlaceholder")}
-              value={state.email}
-              onChange={(e) => actions.setEmail(e.target.value)}
               autoComplete="email"
-              required
+              aria-invalid={errors.email ? "true" : undefined}
+              aria-describedby={
+                errors.email ? "auth-email-error" : undefined
+              }
+              {...register("email")}
             />
           </div>
+          {errors.email && (
+            <p id="auth-email-error" className="login-field-error" role="alert">
+              {errors.email.message}
+            </p>
+          )}
         </div>
 
-        <div className="auth-apple-field">
-          <label className="auth-apple-label" htmlFor="auth-password">
+        <div className="login-field">
+          <label className="login-label" htmlFor="auth-password">
             {t("login.form.passwordLabel")}
           </label>
-          <div className="auth-apple-input-wrap">
+          <div className="login-input-wrap">
             <input
+              {...register("password")}
               id="auth-password"
-              className="auth-apple-input auth-apple-input--password"
-              type={state.showPwd ? "text" : "password"}
+              className="login-input login-input--password"
+              type={showPwd ? "text" : "password"}
               placeholder={t("login.form.passwordPlaceholder")}
-              value={state.password}
-              onChange={(e) => actions.setPassword(e.target.value)}
               autoComplete="current-password"
-              required
+              aria-invalid={errors.password ? "true" : undefined}
+              aria-describedby={
+                errors.password ? "auth-password-error" : undefined
+              }
             />
             <button
               type="button"
-              className="auth-apple-pwd-toggle"
-              onClick={actions.toggleShowPwd}
+              className="login-pwd-toggle"
+              onClick={() => setShowPwd((v) => !v)}
               aria-label={
-                state.showPwd
+                showPwd
                   ? t("login.form.hidePassword")
                   : t("login.form.showPassword")
               }
             >
-              <IconEye open={state.showPwd} />
+              <IconEye open={showPwd} />
             </button>
           </div>
+          {errors.password && (
+            <p
+              id="auth-password-error"
+              className="login-field-error"
+              role="alert"
+            >
+              {errors.password.message}
+            </p>
+          )}
         </div>
 
-        <div className="auth-apple-options">
-          <label className="auth-apple-remember">
+        {error && (
+          <div className="login-alert" role="alert">
+            {error}
+          </div>
+        )}
+
+        <div className="login-options">
+          <label className="login-remember">
             <input
               type="checkbox"
-              checked={state.remember}
-              onChange={() => actions.toggleRemember()}
+              checked={remember}
+              onChange={() => setRemember((v) => !v)}
             />
             {t("login.form.remember")}
           </label>
-          <a href="#" className="auth-apple-forgot">
+          <a href="#" className="login-forgot">
             {t("login.form.forgot")}
           </a>
         </div>
 
         <button
           type="submit"
-          className="auth-apple-btn-primary"
-          disabled={state.loading}
+          className="login-btn-primary"
+          disabled={busy}
         >
-          {state.loading ? (
-            <span className="auth-apple-spinner" aria-hidden="true" />
+          {busy ? (
+            <span className="login-spinner" aria-hidden="true" />
           ) : (
             t("login.form.submit")
           )}
         </button>
 
-        <div className="auth-apple-divider">
+        <div className="login-divider">
           <span>{t("login.form.dividerOr")}</span>
         </div>
 
-        <button type="button" className="auth-apple-btn-social">
+        <button type="button" className="login-btn-social">
           <IconGoogle />
           {t("login.form.google")}
         </button>
       </form>
 
-      <p className="auth-apple-register">
+      <p className="login-register">
         {t("login.form.registerPrefix")}{" "}
         <a href="#">{t("login.form.registerLink")}</a>
       </p>
 
-      <p className="auth-apple-security">
+      <p className="login-security">
         <IconShield />
         {t("login.form.securityNote")}
       </p>

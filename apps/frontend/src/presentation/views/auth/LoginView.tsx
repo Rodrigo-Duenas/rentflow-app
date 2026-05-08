@@ -1,12 +1,10 @@
-import "../../styles/auth/index.css";
-import { LoginForm, useLoginForm } from "../../components/auth/login";
+import { LoginForm } from "@/presentation/components/auth/login";
+import "@/presentation/styles/auth/index.css";
 
 export const LoginView = () => {
-  const { state, actions } = useLoginForm();
-
   return (
-    <div className="auth-page auth-page--apple">
-      <LoginForm state={state} actions={actions} />
+    <div className="auth-page auth-page--login">
+      <LoginForm />
     </div>
   );
 };
