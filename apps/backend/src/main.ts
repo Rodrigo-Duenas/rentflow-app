@@ -4,6 +4,7 @@ import cors from "@fastify/cors";
 import { billingRoutes } from "./modules/billing/billing.controller.js";
 import { AppError } from "./shared/errors/app-error.js";
 import { errorResponse } from "./shared/http/response.js";
+import { authController } from "./modules/auth/index.js";
 
 const app = Fastify();
 
@@ -28,6 +29,7 @@ app.get("/", async () => {
 
 // 🔥 aquí conectas el módulo
 app.register(billingRoutes);
+await app.register(authController);
 
 app.listen({ port: env.port }, () => {
   console.log(`Server running on http://localhost:${env.port}`);
