@@ -4,9 +4,14 @@ import cors from "@fastify/cors";
 import { billingRoutes } from "./modules/billing/billing.controller.js";
 import { AppError } from "./shared/errors/app-error.js";
 import { errorResponse } from "./shared/http/response.js";
-import { authController } from "./modules/auth/index.js";
+import { authRoutes } from "./modules/auth/index.js";
+import { prisma } from "./infrastructure/prisma.js";
 
 const app = Fastify();
+
+app.addHook("onClose", async () => {
+  await prisma.$disconnect();
+});
 
 await app.register(cors, {
   origin: "http://localhost:5173",
@@ -29,7 +34,7 @@ app.get("/", async () => {
 
 // 🔥 aquí conectas el módulo
 app.register(billingRoutes);
-await app.register(authController);
+await app.register(authRoutes);
 
 app.listen({ port: env.port }, () => {
   console.log(`Server running on http://localhost:${env.port}`);
