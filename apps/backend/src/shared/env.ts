@@ -2,6 +2,8 @@ import dotenv from "dotenv";
 import path from "node:path";
 import { z } from "zod";
 
+// Carga primero `.env` en la raíz del backend; `config/.env` puede sobrescribir (local).
+dotenv.config({ path: path.resolve(process.cwd(), ".env") });
 dotenv.config({ path: path.resolve(process.cwd(), "config", ".env") });
 
 const EnvSchema = z.object({
